@@ -5,6 +5,7 @@
 
 % export GHUSER=dakrone
 % export GHREPO=cheshire
+% export GHREPOOWNER=dakrone
 % export GHPASS=mysupersecretpassword
 
 % java -jar gh-upload-1.0-standalone.jar /path/to/file.data

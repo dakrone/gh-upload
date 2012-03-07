@@ -11,6 +11,10 @@
   (or (System/getenv "GHPASS")
       (throw (Exception. "Need $GHPASS set to Github password."))))
 
+(defn get-repo-owner []
+  (or (System/getenv "GHREPOOWNER")
+      (throw (Exception. "Need $GHREPOOWNER set to Github repository owner."))))
+
 (defn get-repo []
   (or (System/getenv "GHREPO")
       (throw (Exception. "Need $GHREPO set to Github repository."))))
@@ -18,10 +22,11 @@
 (defn delete-if-exists [filename]
   (println "Checking if file already exists...")
   (let [user (get-user)
+        owner (get-repo-owner)
         repo (get-repo)
         opts {:auth (str user ":" (get-password))}
         basename (.getName (file filename))
-        downloads (repo/downloads user repo)
+        downloads (repo/downloads owner repo)
         id (first (map :id (filter #(= (:name %) basename) downloads)))]
     (when id
       (println "Deleting existing file...")
@@ -29,10 +34,11 @@
 
 (defn upload-file [filename]
   (let [user (get-user)
+        owner (get-repo-owner)
         repo (get-repo)
         opts {:auth (str user ":" (get-password))}
         _ (delete-if-exists filename)
-        resp (repo/download-resource user repo filename opts)]
+        resp (repo/download-resource owner repo filename opts)]
     (println (str "Uploading file " filename "..."))
     (repo/upload-file resp)))
 
