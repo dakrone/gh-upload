@@ -26,11 +26,11 @@
         repo (get-repo)
         opts {:auth (str user ":" (get-password))}
         basename (.getName (file filename))
-        downloads (repo/downloads owner repo)
+        downloads (repo/downloads owner repo opts)
         id (first (map :id (filter #(= (:name %) basename) downloads)))]
     (when id
-      (println "Deleting existing file...")
-      (repo/delete-download (get-user) (get-repo) id opts))))
+      (println (str "Deleting existing file (" id ")..."))
+      (repo/delete-download owner repo id opts))))
 
 (defn upload-file [filename]
   (let [user (get-user)
@@ -44,5 +44,6 @@
 
 (defn -main [& args]
   (if (first args)
-    (upload-file (first args))
+    (do (upload-file (first args))
+        (println "Done."))
     (println "Need a file to upload.")))
